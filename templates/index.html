@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SWIFT Fraud Detection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <header class="header">
+    <h1>SWIFT Fraud Detection</h1>
+    <p class="tagline">Score transactions and batch CSV with explainability</p>
+  </header>
+
+  <main class="main">
+    <!-- Global threshold -->
+    <section class="card threshold-card">
+      <h2>Detection threshold</h2>
+      <p class="threshold-hint" id="thresholdHint">
+        Balanced — equal weight to catching fraud and avoiding false alarms.
+      </p>
+      <div class="threshold-row">
+        <label for="threshold" class="threshold-label">Strictness</label>
+        <input type="range" id="threshold" min="0.2" max="0.9" step="0.05" value="0.5" />
+        <span class="threshold-value" id="thresholdValue">0.50</span>
+      </div>
+      <p class="threshold-detail" id="thresholdDetail">
+        At 0.50: transactions with fraud probability ≥ 50% are flagged as fraud.
+      </p>
+    </section>
+
+    <!-- Single transaction -->
+    <section class="card">
+      <h2>Score single transaction</h2>
+      <form id="singleForm" class="form">
+        <div class="form-grid">
+          <label for="amount">Amount <span class="required">*</span></label>
+          <input type="number" id="amount" name="amount" min="0.01" step="0.01" required placeholder="e.g. 50000" />
+          <label for="sender_country">Sender country <span class="required">*</span></label>
+          <select id="sender_country" name="sender_country" required>
+            <option value="">Select country</option>
+            <optgroup label="Common (typical routes)">
+              <option value="USA">USA</option>
+              <option value="Canada">Canada</option>
+              <option value="UK">UK</option>
+              <option value="Germany">Germany</option>
+              <option value="France">France</option>
+              <option value="Japan">Japan</option>
+              <option value="Australia">Australia</option>
+            </optgroup>
+            <optgroup label="High-risk (often flagged)">
+              <option value="Nigeria">Nigeria</option>
+              <option value="Russia">Russia</option>
+              <option value="North Korea">North Korea</option>
+              <option value="Iran">Iran</option>
+              <option value="Cayman Islands">Cayman Islands</option>
+              <option value="Panama">Panama</option>
+            </optgroup>
+          </select>
+          <label for="receiver_country">Receiver country <span class="required">*</span></label>
+          <select id="receiver_country" name="receiver_country" required>
+            <option value="">Select country</option>
+            <optgroup label="Common (typical routes)">
+              <option value="USA">USA</option>
+              <option value="Canada">Canada</option>
+              <option value="UK">UK</option>
+              <option value="Germany">Germany</option>
+              <option value="France">France</option>
+              <option value="Japan">Japan</option>
+              <option value="Australia">Australia</option>
+            </optgroup>
+            <optgroup label="High-risk (often flagged)">
+              <option value="Nigeria">Nigeria</option>
+              <option value="Russia">Russia</option>
+              <option value="North Korea">North Korea</option>
+              <option value="Iran">Iran</option>
+              <option value="Cayman Islands">Cayman Islands</option>
+              <option value="Panama">Panama</option>
+            </optgroup>
+          </select>
+        </div>
+        <details class="advanced">
+          <summary>Optional fields (defaults used if empty)</summary>
+          <div class="form-grid">
+            <label for="hour_of_day">Hour (0–23)</label>
+            <input type="number" id="hour_of_day" name="hour_of_day" min="0" max="23" placeholder="12" />
+            <label for="day_of_week">Day (0=Mon … 6=Sun)</label>
+            <input type="number" id="day_of_week" name="day_of_week" min="0" max="6" placeholder="2" />
+            <label for="account_age_days">Account age (days)</label>
+            <input type="number" id="account_age_days" name="account_age_days" min="0" placeholder="365" />
+            <label for="transaction_velocity">Transactions per day</label>
+            <input type="number" id="transaction_velocity" name="transaction_velocity" min="0" placeholder="1" />
+            <label for="ip_country_matches_sender">IP matches sender (0 or 1)</label>
+            <input type="number" id="ip_country_matches_sender" name="ip_country_matches_sender" min="0" max="1" placeholder="1" />
+            <label for="message_has_typos">Message has typos (0 or 1)</label>
+            <input type="number" id="message_has_typos" name="message_has_typos" min="0" max="1" placeholder="0" />
+            <label for="message_type">Message type</label>
+            <input type="text" id="message_type" name="message_type" placeholder="pacs.008" />
+          </div>
+        </details>
+        <p id="singleError" class="error" aria-live="polite"></p>
+        <button type="submit" class="btn btn-primary">Score transaction</button>
+      </form>
+      <div id="singleResult" class="result-box" hidden>
+        <div class="result-header">
+          <span class="result-badge" id="resultBadge">—</span>
+          <span class="result-prob" id="resultProb">—</span>
+        </div>
+        <p class="result-threshold" id="resultThreshold"></p>
+        <div class="reasons" id="reasonsList"></div>
+      </div>
+    </section>
+
+    <!-- Batch upload -->
+    <section class="card">
+      <h2>Batch score (CSV upload)</h2>
+      <p class="batch-desc">Upload a CSV with columns: <code>amount</code>, <code>sender_country</code>, <code>receiver_country</code>. Optional: hour_of_day, day_of_week, account_age_days, transaction_velocity, ip_country_matches_sender, message_has_typos, message_type. No missing amount or negative values.</p>
+      <form id="batchForm" class="form">
+        <label for="batchFile" class="file-label">Choose CSV file</label>
+        <input type="file" id="batchFile" name="file" accept=".csv" required />
+        <p id="batchError" class="error" aria-live="polite"></p>
+        <button type="submit" class="btn btn-primary">Upload and score</button>
+      </form>
+      <div id="batchResult" class="result-box" hidden>
+        <p id="batchSuccess" class="success"></p>
+      </div>
+    </section>
+
+    <!-- About / Stats -->
+    <section class="card card-about">
+      <h2>About this model</h2>
+      <p class="about-lead">Context for the numbers below: how the AI was trained and what the metrics mean.</p>
+
+      <h3 class="about-sub">Training data</h3>
+      <p>The model was trained on <strong>200,000</strong> synthetic SWIFT-style transactions (~0.5% fraud). We didn’t use real bank data; we generated realistic patterns (amounts, countries, timing) so the AI can learn what “normal” vs “suspicious” looks like.</p>
+
+      <h3 class="about-sub">What is “noise”?</h3>
+      <p>In real life, not every fraud looks textbook and not every normal transaction looks boring. So we added <strong>noise</strong>: we deliberately made some normal transactions look a bit like fraud (e.g. off-hours or risky country) and some fraud look a bit like normal (e.g. business hours). That way the model learns to handle messy, overlapping cases instead of only perfect ones—closer to how it would perform in production.</p>
+
+      <h3 class="about-sub">Model performance</h3>
+      <p>We held out <strong>10,000</strong> transactions the model had never seen (with extra noise) and ran the model on them. Here’s what happened:</p>
+      <ul class="stats-list">
+        <li><strong>Normal transactions (9,950):</strong> <strong>9,947</strong> were correctly called normal; <strong>3</strong> were wrongly flagged as fraud (false alarms).</li>
+        <li><strong>Fraud transactions (50):</strong> <strong>42</strong> were correctly caught; <strong>8</strong> were missed.</li>
+        <li><strong>Overall:</strong> About <strong>99.9%</strong> of the 10,000 predictions were correct. When we flag something as fraud, we’re right about <strong>93%</strong> of the time.</li>
+      </ul>
+      <p class="about-note">These numbers are from the prototype. In production you’d retrain on real data and monitor over time.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Prototype — trained on synthetic SWIFT-style data. Threshold applies to both single and batch.</p>
+  </footer>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

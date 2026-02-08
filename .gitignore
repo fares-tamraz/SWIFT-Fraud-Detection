@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.pkl
+!models/fraud_detector.pkl
+*.joblib
+.env
+.venv/
+venv/
+*.log
+data/*.csv
+!data/sample_data.csv

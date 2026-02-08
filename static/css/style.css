@@ -1,0 +1,349 @@
+/* SWIFT Fraud Detection — modern, professional */
+
+:root {
+  --bg: #0f1419;
+  --surface: #1a2332;
+  --surface2: #243044;
+  --text: #e6edf3;
+  --text-muted: #8b9cb3;
+  --accent: #3fb950;
+  --accent-hover: #56d364;
+  --danger: #f85149;
+  --warning: #d29922;
+  --radius: 10px;
+  --font: "DM Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.header {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--surface2);
+}
+
+.header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.tagline {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--surface2);
+}
+
+.card h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+/* Threshold */
+.threshold-card .threshold-hint {
+  margin: 0 0 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.threshold-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.threshold-label {
+  flex: 0 0 auto;
+  font-weight: 500;
+}
+
+.threshold-row input[type="range"] {
+  flex: 1;
+  height: 8px;
+  accent-color: var(--accent);
+}
+
+.threshold-value {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  min-width: 3.5ch;
+}
+
+.threshold-detail {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Form */
+.form {
+  margin-bottom: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1rem;
+  align-items: center;
+}
+
+.form-grid label {
+  font-size: 0.9rem;
+}
+
+.required {
+  color: var(--danger);
+}
+
+.form-grid input,
+.form-grid select,
+.form input[type="number"],
+.form input[type="text"] {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--surface2);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.form-grid select {
+  cursor: pointer;
+}
+
+.form-grid select optgroup {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.form-grid input:focus,
+.form-grid select:focus,
+.form input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.advanced {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.advanced summary {
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.advanced .form-grid {
+  margin-top: 0.75rem;
+}
+
+.file-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form input[type="file"] {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 0.9rem;
+  margin: 0.5rem 0 0;
+}
+
+.success {
+  color: var(--accent);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Result box */
+.result-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--surface2);
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.result-badge {
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+}
+
+.result-badge.fraud {
+  background: rgba(248, 81, 73, 0.2);
+  color: var(--danger);
+}
+
+.result-badge.normal {
+  background: rgba(63, 185, 80, 0.2);
+  color: var(--accent);
+}
+
+.result-prob {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+}
+
+.result-threshold {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.reasons {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--surface2);
+}
+
+.reasons h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.reasons ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.reasons li {
+  margin-bottom: 0.25rem;
+}
+
+.batch-desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.batch-desc code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--surface2);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+/* About / Stats card */
+.card-about {
+  border-left: 4px solid var(--accent);
+}
+
+.card-about .about-lead {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0 0 1.25rem;
+}
+
+.card-about .about-sub {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1rem 0 0.5rem;
+}
+
+.card-about .about-sub:first-of-type {
+  margin-top: 0;
+}
+
+.card-about p {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.stats-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.stats-list li {
+  margin-bottom: 0.35rem;
+}
+
+.about-note {
+  margin-top: 1rem !important;
+  font-size: 0.85rem !important;
+  color: var(--text-muted);
+}
+
+.footer {
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--surface2);
+}

@@ -1,6 +1,6 @@
-# Deploy the app so Ali can use it with just a link
+# Deploy the app so anyone can use it with just a link
 
-Right now the app runs **locally** (only on your machine). To give Ali a **link** (e.g. `https://your-app.onrender.com`) so he can open it in a browser without installing anything, you need to put the app on a **host** on the internet.
+Right now the app runs **locally** (only on your machine). To share a **public link** (e.g. `https://your-app.onrender.com`) so anyone can open it in a browser without installing anything, you need to put the app on a **host** on the internet.
 
 Below is the simplest path: **Render** (free tier). Same idea works for **Railway** or **Hugging Face Spaces**.
 
@@ -39,7 +39,7 @@ git push
 3. Connect your **GitHub** account and select the repo `SWIFT-Fraud-Detection`.
 4. Configure:
    - **Name:** e.g. `swift-fraud-detection`
-   - **Region:** pick one close to you or Ali.
+   - **Region:** pick one close to you or your users.
    - **Branch:** `main`
    - **Runtime:** `Python 3`
    - **Build command:**  
@@ -49,7 +49,7 @@ git push
 5. **Create Web Service**. Render will build and start the app.
 6. When it’s live, Render gives you a URL like:  
    `https://swift-fraud-detection.onrender.com`  
-   That’s the link you send to Ali. He opens it in a browser; no install, no backend on his side.
+   That’s your public URL. Anyone can open it in a browser; no install, no backend on their side.
 
 **Free tier note:** The app may “sleep” after 15 minutes of no use. The first open after that can take 30–60 seconds to wake up; after that it’s fast again.
 
@@ -68,6 +68,6 @@ git push
 |------|-------------|
 | 1 | Push the project (including `models/fraud_detector.pkl`) to GitHub. |
 | 2 | On Render: New Web Service → connect repo → build `pip install -r requirements.txt`, start `gunicorn --bind 0.0.0.0:$PORT app:app`. |
-| 3 | Send Ali the Render URL. He uses the site with just the link; nothing to download or run. |
+| 3 | Share the Render URL. Anyone can use the site with just the link; nothing to download or run. |
 
 The app is already set up to use the `PORT` and `0.0.0.0` host that Render (and similar hosts) provide, so no extra code changes are needed beyond what’s in the repo.

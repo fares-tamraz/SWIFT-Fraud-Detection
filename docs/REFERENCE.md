@@ -1,31 +1,13 @@
 # SWIFT Fraud Detection Prototype - Complete Reference Guide
 
 ## 🎯 Project Goal
-Build an end-to-end ML prototype that detects fraudulent SWIFT messages to impress your IBM interviewer (Ali).
+Build an end-to-end ML prototype that detects fraudulent SWIFT messages using a Random Forest classifier on synthetic transaction data, with a web app for single and batch scoring and explainability.
 
-**Why this matters:** During your interview, the interviewer asked if you could build a fraud detection prototype from scratch. You're now building it to demonstrate initiative and technical capability.
-
----
-
-## 📋 Project Context
-
-### The Interview
-- **Role:** IBM Payments Centre (SWIFT) Consulting Intern
-- **Key Questions Asked:**
-  - How SWIFT compares to cryptocurrency (speed vs security)
-  - How to implement AI for fraud detection
-  - If you could build an end-to-end ML prototype for SWIFT fraud detection
-  - Your consulting approach to client problems (prioritization, severity-based)
-
-### Your Background
-- Built CNN classifier for bottle caps (mostly AI-assisted)
-- Did simple CIFAR10 model (copied from YouTube, learned the basics)
-- Understand: conv2d, maxpooling, train/test splits, model evaluation
-- **Gap:** Need to learn tabular data ML (this project fills that gap)
+**Why this matters:** Fraud detection in payments is a classic ML use case—tabular data, imbalanced classes, and a need for interpretability. This project covers the full pipeline: data generation, feature engineering, training, evaluation, and deployment.
 
 ---
 
-## 🧠 Fraud Detection Knowledge (Your Research)
+## 🧠 Fraud Detection Knowledge
 
 ### What Makes SWIFT Transactions Fraudulent?
 
@@ -35,7 +17,7 @@ Build an end-to-end ML prototype that detects fraudulent SWIFT messages to impre
 3. Using mule/new accounts for transfers
 4. Timing attacks (before weekends/holidays to delay detection)
 
-**Fraud Indicators You Identified:**
+**Fraud indicators used in this project:**
 - **Timing:** Transactions at 3am, before weekends/holidays
 - **Amounts:** Just below reporting thresholds (e.g., $999,999 instead of $1,000,000)
 - **Velocity:** Multiple frequent messages from usually quiet banks
@@ -70,7 +52,7 @@ swift-fraud-detection/
 ├── notebooks/
 │   └── exploration.ipynb           # (Optional) For testing
 │
-├── README.md                       # Documentation for Ali
+├── README.md                       # Project documentation
 ├── requirements.txt                # Python dependencies
 └── REFERENCE.md                    # This file
 ```
@@ -80,7 +62,7 @@ swift-fraud-detection/
 ## 🔧 Technical Approach
 
 ### Why NOT Use CNN?
-- **CNN** = designed for spatial patterns in images (your bottle cap project)
+- **CNN** = designed for spatial patterns in images
 - **SWIFT fraud** = numerical/categorical patterns in tabular data
 - **Solution:** Use Random Forest or Logistic Regression instead
 
@@ -573,13 +555,13 @@ python predict.py
 
 ---
 
-## 📝 README.md Template (For Ali)
+## 📝 README.md Template
 
 ```markdown
 # SWIFT Fraud Detection Prototype
 
 ## Overview
-ML-powered fraud detection system for SWIFT payment messages. Built in response to our interview discussion about implementing AI for financial fraud prevention.
+ML-powered fraud detection system for SWIFT-style payment messages.
 
 ## Problem Statement
 Banks process thousands of SWIFT transactions daily. Fraudulent messages often exhibit patterns like:
@@ -621,7 +603,7 @@ src/predict.py        - Makes predictions on new transactions
 - Integration with live transaction feeds
 - Explainability module (why was it flagged?)
 - Adaptive learning (model updates as fraud evolves)
-- Integration with IBM Payments Centre platform
+- Integration with payment platforms and live feeds
 
 ## What I Learned
 - Translating domain knowledge (fraud indicators) into ML features
@@ -631,7 +613,6 @@ src/predict.py        - Makes predictions on new transactions
 
 Built by: [Your Name]
 Date: [Today's Date]
-Context: IBM Payments Centre Interview Follow-up
 ```
 
 ---
@@ -650,37 +631,19 @@ Context: IBM Payments Centre Interview Follow-up
 3. Test edge cases
 4. Record 2-min demo video
 
-### Day 4: Send
-**Email to Ali:**
-
-Subject: SWIFT Fraud Detection Prototype - Following Up
-
-Hi Ali,
-
-You asked during our interview if I could build an end-to-end ML prototype for SWIFT fraud detection. I spent the past few days putting one together.
-
-GitHub: [your-link]
-Quick demo: [2-min video]
-
-Key features:
-- Detects fraud based on timing, amounts, geography, account behavior
-- ~85% accuracy on test data
-- Random Forest model (not CNN - learned why tabular data needs different approach)
-
-I documented what I learned in the README. Would appreciate any feedback!
-
-Thanks,
-Fares
+### Day 4: Share
+- Push the repo to GitHub and optionally deploy the web app (see `docs/DEPLOY.md`).
+- Share the link so others can try single/batch scoring without running code locally.
 
 ---
 
 ## 🧠 Key Learning Points
 
 ### Why This Approach Works
-1. **Domain knowledge first:** Your fraud research directly informed the features
+1. **Domain knowledge first:** Fraud research (timing, geography, velocity) directly informed the features
 2. **Right tool for the job:** Random Forest > CNN for tabular data
 3. **Interpretable:** Feature importance shows WHY transactions are flagged
-4. **Practical:** Could actually integrate with IBM Payments Centre
+4. **Practical:** Could integrate with payment platforms and live transaction feeds
 
 ### What Makes This Impressive
 - Shows you can execute, not just theorize
@@ -734,29 +697,24 @@ We use `class_weight='balanced'` so the model doesn't ignore rare fraud cases.
 
 ---
 
-## 🎯 Interview Talking Points
+## 🎯 Discussion points
 
-If Ali asks about the prototype:
+**"Walk me through your approach"**  
+Research fraud patterns (off-hours, country pairs, velocity, etc.) → translate into ML features → Random Forest for tabular data → evaluate on held-out and noisier test data → add explainability and a web app.
 
-**"Walk me through your approach"**
-→ "I started by researching real fraud patterns - things like off-hour transactions and unusual country pairs. Then I translated those into ML features. I chose Random Forest over deep learning because it's more interpretable and better suited for tabular data. The model achieved 85% accuracy on test data."
+**"What was the hardest part?"**  
+Encoding categorical variables consistently at train and predict time; balancing precision vs recall for fraud; handling noisy/overlapping data.
 
-**"What was the hardest part?"**
-→ "Understanding how to encode categorical variables like country names into numbers the model could use. Also balancing precision vs recall - you don't want to flag legitimate transactions, but you can't miss fraud either."
+**"How would you deploy this in production?"**  
+Real-time API that receives transactions, extracts features, returns fraud probability. Add human-in-the-loop for high-confidence flags. Continuously retrain as fraud patterns evolve.
 
-**"How would you deploy this in production?"**
-→ "Real-time API that receives SWIFT messages, extracts features, returns fraud probability. Integrate with IBM Payments Centre. Add human-in-the-loop for high-confidence cases. Continuously retrain as fraud patterns evolve."
-
-**"What would you improve?"**
-→ "Parse actual MT/MX message formats. Add explainability so analysts know WHY it was flagged. Use more sophisticated models like XGBoost. Incorporate network analysis - fraudsters often work in rings."
+**"What would you improve?"**  
+Parse actual MT/MX message formats; add more features from real SWIFT fields; try XGBoost or calibration; incorporate network/graph signals.
 
 ---
 
-## 💡 Remember
+## 💡 Summary
 
-- You're not expected to be perfect - this is a POC
-- The goal is showing initiative, learning ability, and execution
-- Understanding the "why" matters more than flawless code
-- This project shows you can bridge business problems and technical solutions
-
-Good luck! You've got this. 🚀
+- This is a POC: synthetic data, clear pipeline, interpretable model.
+- Understanding the "why" (features, threshold, noise) matters more than perfect metrics.
+- The project bridges domain (fraud indicators) and technical execution (data → model → web app).

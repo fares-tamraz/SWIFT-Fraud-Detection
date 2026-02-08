@@ -34,8 +34,6 @@ SWIFT-Fraud-Detection/
 │   ├── predict.py         # Predict + explainability
 │   └── evaluate.py        # Evaluate on held-out test CSV
 ├── docs/
-│   ├── REFERENCE.md       # Full reference (fraud knowledge, pipeline, concepts)
-│   └── DEPLOY.md          # How to deploy the app to a public URL
 ├── requirements.txt
 └── README.md
 ```

@@ -83,11 +83,9 @@ python app.py
 
 Open **http://127.0.0.1:5000**. You can score a single transaction (form), adjust the threshold (slider), or upload a CSV for batch scoring and download the results.
 
-### 5. Deploy so others can use a link
+### 5. Live demo
 
-Deploy the app to **Render**, **Railway**, or **Hugging Face Spaces** (connect your GitHub repo, set build command `pip install -r requirements.txt` and start command `gunicorn --bind 0.0.0.0:$PORT app:app`) so anyone can use it via a public URL without installing anything.
-
-**Deploy checklist:** Ensure `templates/` and `static/` (including `static/css/style.css` and `static/js/app.js`) are committed and pushed. If the live site shows a white page or missing styles, check that those files exist in the repo on GitHub and that the service’s **Root Directory** is the repo root (or leave it blank). On Render, try **Clear build cache & deploy** if static files were added in a recent commit.
+A deployed version is available at **[swift-fraud-detection.onrender.com](https://swift-fraud-detection.onrender.com/)** — score a single transaction or upload a CSV to try it.
 
 ## Data schema
 

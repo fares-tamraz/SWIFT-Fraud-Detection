@@ -87,6 +87,8 @@ Open **http://127.0.0.1:5000**. You can score a single transaction (form), adjus
 
 Deploy the app to **Render**, **Railway**, or **Hugging Face Spaces** (connect your GitHub repo, set build command `pip install -r requirements.txt` and start command `gunicorn --bind 0.0.0.0:$PORT app:app`) so anyone can use it via a public URL without installing anything.
 
+**Deploy checklist:** Ensure `templates/` and `static/` (including `static/css/style.css` and `static/js/app.js`) are committed and pushed. If the live site shows a white page or missing styles, check that those files exist in the repo on GitHub and that the service’s **Root Directory** is the repo root (or leave it blank). On Render, try **Clear build cache & deploy** if static files were added in a recent commit.
+
 ## Data schema
 
 Training and batch CSVs use these columns:

@@ -10,3 +10,4 @@ venv/
 *.log
 data/*.csv
 !data/sample_data.csv
+docs/

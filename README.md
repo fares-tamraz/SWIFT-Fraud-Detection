@@ -33,9 +33,6 @@ SWIFT-Fraud-Detection/
 │   ├── train.py           # Train Random Forest, save model + encoders
 │   ├── predict.py         # Predict + explainability
 │   └── evaluate.py        # Evaluate on held-out test CSV
-├── docs/
-│   ├── REFERENCE.md       # Full reference (fraud knowledge, pipeline, concepts)
-│   └── DEPLOY.md          # How to deploy the app to a public URL
 ├── requirements.txt
 └── README.md
 ```
@@ -88,7 +85,7 @@ Open **http://127.0.0.1:5000**. You can score a single transaction (form), adjus
 
 ### 5. Deploy so others can use a link
 
-See **[docs/DEPLOY.md](docs/DEPLOY.md)** for deploying to Render (or Railway / Hugging Face) so anyone can use the app via a public URL without installing anything.
+Deploy the app to **Render**, **Railway**, or **Hugging Face Spaces** (connect your GitHub repo, set build command `pip install -r requirements.txt` and start command `gunicorn --bind 0.0.0.0:$PORT app:app`) so anyone can use it via a public URL without installing anything.
 
 ## Data schema
 

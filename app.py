@@ -12,12 +12,24 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from flask import Flask, request, jsonify, render_template, send_file
+from flask_cors import CORS
 import pandas as pd
 
 from src.predict import load_model, transaction_to_row, get_explanation_reasons
 from src.features import add_high_risk_pair, FEATURE_COLUMNS
 
 app = Flask(__name__, template_folder=str(ROOT / "templates"), static_folder=str(ROOT / "static"))
+def _cors_origins(origin):
+    if not origin:
+        return True
+    if origin == "http://localhost:3000":
+        return True
+    if origin.startswith("https://") and origin.endswith(".vercel.app"):
+        return True
+    return False
+
+
+CORS(app, origins=_cors_origins)
 
 # Load model once at startup
 MODEL_PATH = ROOT / "models" / "fraud_detector.pkl"
@@ -160,6 +172,70 @@ def api_batch():
         as_attachment=True,
         download_name="fraud_scores.csv",
     )
+
+
+# --- Stub endpoints for fraud-ui (mock data until real implementation) ---
+
+MOCK_EXPLAIN = {
+    "score": 0.87,
+    "verdict": "fraud",
+    "features": [
+        {"name": "transaction_velocity", "humanLabel": "Transaction velocity", "value": 8, "normalizedValue": 0.72, "contribution": 0.31, "severity": "critical"},
+        {"name": "account_age_days", "humanLabel": "Account age (days)", "value": 3, "normalizedValue": 0.02, "contribution": 0.22, "severity": "high"},
+        {"name": "amount", "humanLabel": "Amount", "value": 187500, "normalizedValue": 0.65, "contribution": 0.18, "severity": "high"},
+        {"name": "hour_of_day", "humanLabel": "Hour of day", "value": 14, "normalizedValue": 0.58, "contribution": 0.08, "severity": "medium"},
+        {"name": "high_risk_country_pair", "humanLabel": "High-risk country pair", "value": 1, "normalizedValue": 1.0, "contribution": 0.08, "severity": "medium"},
+    ],
+}
+
+MOCK_GRAPH_NODES = [
+    {"id": "n1", "label": "Acme Corp", "type": "corporate", "riskLevel": "clean", "country": "USA", "isSelected": False, "isFocused": False},
+    {"id": "n2", "label": "First Bank", "type": "bank", "riskLevel": "clean", "country": "USA", "isSelected": False, "isFocused": False},
+    {"id": "n3", "label": "Offshore LLC", "type": "shell", "riskLevel": "fraud", "country": "Cayman Islands", "isSelected": False, "isFocused": False},
+    {"id": "n4", "label": "John Doe", "type": "individual", "riskLevel": "suspicious", "country": "UK", "isSelected": False, "isFocused": False},
+    {"id": "n5", "label": "Euro Bank", "type": "bank", "riskLevel": "clean", "country": "Germany", "isSelected": False, "isFocused": False},
+    {"id": "n6", "label": "Unknown Entity", "type": "unknown", "riskLevel": "suspicious", "country": "Panama", "isSelected": False, "isFocused": False},
+    {"id": "n7", "label": "Payments Inc", "type": "corporate", "riskLevel": "clean", "country": "Canada", "isSelected": False, "isFocused": False},
+    {"id": "n8", "label": "Trust Fund", "type": "individual", "riskLevel": "clean", "country": "USA", "isSelected": False, "isFocused": False},
+]
+
+MOCK_GRAPH_EDGES = [
+    {"source": "n1", "target": "n2", "amount": 50000, "timestamp": "2024-01-15T10:30:00Z", "riskLevel": "clean", "messageType": "pacs.008"},
+    {"source": "n2", "target": "n3", "amount": 45000, "timestamp": "2024-01-15T10:35:00Z", "riskLevel": "fraud", "messageType": "pacs.008"},
+    {"source": "n1", "target": "n4", "amount": 12000, "timestamp": "2024-01-14T14:00:00Z", "riskLevel": "suspicious", "messageType": "pacs.009"},
+    {"source": "n4", "target": "n5", "amount": 8000, "timestamp": "2024-01-14T16:00:00Z", "riskLevel": "clean", "messageType": "pacs.008"},
+    {"source": "n5", "target": "n6", "amount": 75000, "timestamp": "2024-01-13T09:00:00Z", "riskLevel": "suspicious", "messageType": "pacs.004"},
+    {"source": "n7", "target": "n1", "amount": 25000, "timestamp": "2024-01-12T11:00:00Z", "riskLevel": "clean", "messageType": "pacs.008"},
+    {"source": "n8", "target": "n2", "amount": 100000, "timestamp": "2024-01-11T15:30:00Z", "riskLevel": "clean", "messageType": "pacs.008"},
+    {"source": "n3", "target": "n6", "amount": 30000, "timestamp": "2024-01-15T11:00:00Z", "riskLevel": "fraud", "messageType": "pacs.009"},
+    {"source": "n2", "target": "n7", "amount": 15000, "timestamp": "2024-01-10T08:00:00Z", "riskLevel": "clean", "messageType": "pacs.008"},
+    {"source": "n6", "target": "n3", "amount": 20000, "timestamp": "2024-01-14T17:00:00Z", "riskLevel": "fraud", "messageType": "pacs.008"},
+]
+
+MOCK_COUNTERFACTUAL = {
+    "originalScore": 0.87,
+    "achievedScore": 0.38,
+    "changes": {
+        "accountAgeDays": {"from": 3, "to": 90, "impact": 0.22},
+        "transactionVelocity": {"from": 8, "to": 2, "impact": 0.31},
+        "hourOfDay": {"from": 14, "to": 10, "impact": 0.08},
+    },
+}
+
+
+@app.route("/api/explain", methods=["POST"])
+def api_explain():
+    return jsonify(MOCK_EXPLAIN)
+
+
+@app.route("/api/graph", methods=["POST"])
+def api_graph():
+    return jsonify({"nodes": MOCK_GRAPH_NODES, "edges": MOCK_GRAPH_EDGES})
+
+
+@app.route("/api/counterfactual", methods=["POST"])
+def api_counterfactual():
+    return jsonify(MOCK_COUNTERFACTUAL)
 
 
 if __name__ == "__main__":

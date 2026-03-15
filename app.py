@@ -19,17 +19,7 @@ from src.predict import load_model, transaction_to_row, get_explanation_reasons
 from src.features import add_high_risk_pair, FEATURE_COLUMNS
 
 app = Flask(__name__, template_folder=str(ROOT / "templates"), static_folder=str(ROOT / "static"))
-def _cors_origins(origin):
-    if not origin:
-        return True
-    if origin == "http://localhost:3000":
-        return True
-    if origin.startswith("https://") and origin.endswith(".vercel.app"):
-        return True
-    return False
-
-
-CORS(app, origins=_cors_origins)
+CORS(app)
 
 # Load model once at startup
 MODEL_PATH = ROOT / "models" / "fraud_detector.pkl"

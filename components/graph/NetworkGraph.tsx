@@ -2,7 +2,9 @@
 
 import dynamic from "next/dynamic";
 import { Maximize2, ZoomIn, ZoomOut } from "lucide-react";
+import type { MutableRefObject } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { ForceGraphMethods } from "react-force-graph-2d";
 import type { NetworkEdge, NetworkNode } from "@/types";
 
 const BORDER_COLOR = "#2E2E32";
@@ -25,11 +27,6 @@ const RISK_COLOR: Record<NetworkNode["riskLevel"], string> = {
   clean: CLEAN_COLOR,
   suspicious: SUSPICIOUS_COLOR,
   fraud: FRAUD_COLOR,
-};
-
-type GraphRef = {
-  zoom: (rate: number) => void;
-  zoomToFit: (duration?: number, padding?: number) => void;
 };
 
 const ForceGraph2D = dynamic(
@@ -61,7 +58,7 @@ export function NetworkGraph({
   onNodeClick,
   focusedNodeId,
 }: NetworkGraphProps) {
-  const graphRef = useRef<GraphRef | null>(null);
+  const graphRef = useRef<ForceGraphMethods | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [tooltip, setTooltip] = useState<{
@@ -129,7 +126,7 @@ export function NetworkGraph({
       }}
     >
       <ForceGraph2D
-        ref={graphRef as React.RefObject<unknown>}
+        ref={graphRef as MutableRefObject<ForceGraphMethods | undefined>}
         graphData={data}
         backgroundColor="transparent"
         width={dimensions.width}

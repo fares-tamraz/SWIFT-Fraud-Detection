@@ -1,0 +1,12 @@
+# Render blueprint: https://render.com/docs/blueprint-spec
+# Next.js 16 requires Node >= 20.9.0 (see next/package.json engines).
+services:
+  - type: web
+    name: fraud-ui
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "22.12.0"

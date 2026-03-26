@@ -131,7 +131,7 @@ export function NetworkGraph({
         backgroundColor="transparent"
         width={dimensions.width}
         height={dimensions.height}
-        nodeCanvasObject={(node, ctx, _globalScale) => {
+        nodeCanvasObject={(node, ctx) => {
           const n = node as NodeWithPosition;
           const radius = NODE_RADIUS[n.type ?? "unknown"];
           const color = RISK_COLOR[n.riskLevel ?? "clean"];

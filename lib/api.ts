@@ -227,11 +227,21 @@ export async function scoreTransaction(
   transaction: TransactionParameters,
   signal?: AbortSignal
 ): Promise<ScoreResult> {
-  const apiResult = await fetchApi<ScoreResult>("/api/explain", {
-    method: "POST",
-    signal,
-    body: JSON.stringify({ transaction }),
-  });
+  let apiResult: ScoreResult;
+  try {
+    apiResult = await fetchApi<ScoreResult>("/api/explain", {
+      method: "POST",
+      signal,
+      body: JSON.stringify({ transaction }),
+    });
+  } catch (error) {
+    // Preserve abort semantics for callers that cancel in-flight requests.
+    if ((error as Error).name === "AbortError") {
+      throw error;
+    }
+    // Gracefully degrade to local model when backend is unavailable.
+    return deriveExplainFromTransaction(transaction);
+  }
   const transactionSig = signatureOfTransaction(transaction);
   const explainSig = signatureOfExplainResult(apiResult);
   const responseLooksStatic =
